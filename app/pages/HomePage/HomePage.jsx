@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -13,16 +14,18 @@ const ADiv = styled.div`
   width: 0.1111%;
 `;
 
-class HomePage extends Component {
-  constructor(props) {
-    super(props);
-  }
+type Props = {
+  b: string
+};
+
+class HomePage extends Component<Props> {
+  props: Props;
 
   render() {
     return (
       <div className="home">
         <ADiv>Home</ADiv>
-        <JustTryOn a="asdasd"/>
+        <JustTryOn a="asdasd" b="ssss"/>
       </div>
     );
   }

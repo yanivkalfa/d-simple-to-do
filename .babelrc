@@ -3,23 +3,33 @@
     [
       "env",
       {
-        "useBuiltIns": "entry"
+        "useBuiltIns": true
       }
     ],
+    "stage-0",
     "react"
   ],
   "plugins": [
-    "lodash",
-    "transform-decorators-legacy",
-    "transform-class-properties",
-    "transform-object-rest-spread",
+    "add-module-exports",
     "babel-plugin-styled-components",
     "polished"
   ],
   "env": {
+    "production": {
+      "presets": ["react-optimize"],
+      "plugins": ["dev-expression"]
+    },
     "development": {
-      "presets": [
-        "react-hmre"
+      "plugins": [
+        "transform-class-properties",
+        "transform-es2015-classes",
+        [
+          "flow-runtime",
+          {
+            "assert": true,
+            "annotate": true
+          }
+        ]
       ]
     }
   }
