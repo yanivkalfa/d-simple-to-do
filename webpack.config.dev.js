@@ -10,18 +10,17 @@ module.exports = webpackMerge(commonConfig, {
 
   entry: [
     'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:8080',
+    'webpack-dev-server/client?http://localhost:8001',
     'webpack/hot/only-dev-server',
   ],
   devServer: {
+    port:'8001',
     hot: true,
-    contentBase: '/dist',
+    contentBase: path.resolve(__dirname, 'dist'),
     publicPath: '/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin({
-      multiStep: true
-    })
+    new webpack.HotModuleReplacementPlugin()
   ],
   module: {
     rules: [

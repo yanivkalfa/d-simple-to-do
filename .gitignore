@@ -1,15 +1,12 @@
 
 ### Project Specific
-/scratch/**
 /dist/**
 /logs/**
-/server/logs/**
-.env
 
-### Node
-/node/**
-**/node_modules/**
-**/bower_components/**
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+node_modules
+buildTestServer/node_modules
 
 ### Intellij
 .idea/**
@@ -28,4 +25,11 @@ Desktop.ini
 .Spotlight-V100
 .Trashes
 
+# flow-typed
+flow-typed/npm/*
+!flow-typed/npm/module_vx.x.x.js
 
+#ide
+dist
+.idea
+npm-debug.log.*

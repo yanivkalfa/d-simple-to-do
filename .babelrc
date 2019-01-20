@@ -1,33 +1,25 @@
 {
-  "plugins": [
-    "lodash",
-    "transform-decorators-legacy",
-    "transform-class-properties",
-    "transform-object-rest-spread"
-  ],
   "presets": [
-    "react",
     [
       "env",
       {
         "useBuiltIns": "entry"
       }
-    ]
+    ],
+    "react"
+  ],
+  "plugins": [
+    "lodash",
+    "transform-decorators-legacy",
+    "transform-class-properties",
+    "transform-object-rest-spread",
+    "babel-plugin-styled-components",
+    "polished"
   ],
   "env": {
     "development": {
       "presets": [
         "react-hmre"
-      ]
-    },
-    "test": {
-      "plugins": [
-        [
-          "babel-plugin-webpack-aliases",
-          {
-            "config": "./webpack.config.common.js"
-          }
-        ]
       ]
     }
   }

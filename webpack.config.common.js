@@ -1,4 +1,7 @@
 const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 
 module.exports = {
   entry: [
@@ -13,7 +16,6 @@ module.exports = {
   context: path.resolve(__dirname, 'app'),
   resolve: {
     extensions: ['.js', '.jsx'],
-    /*
     alias: {
       'components': path.resolve('./app', 'components'),
       'utilities': path.resolve('./app', 'utilities'),
@@ -26,12 +28,21 @@ module.exports = {
       'pages': path.resolve('./app', 'pages'),
       'reduxContent': path.resolve('./app', 'reduxContent'),
     },
-    */
     modules: [
       path.join(__dirname, 'app'),
       path.join(__dirname, 'node_modules'),
     ]
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, './app/index.tpl.html'),
+      inject: 'body',
+      hash: true,
+      filename: 'index.html',
+      alwaysWriteToDisk: true
+    }),
+    new HtmlWebpackHarddiskPlugin(),
+  ],
   module: {
     rules: [
       {

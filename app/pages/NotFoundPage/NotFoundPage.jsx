@@ -15,7 +15,6 @@ class NotFoundPage extends Component {
   render() {
     return (
       <div className="a-not-found">
-        <TopBar showProfileOption isLoggedIn={this.props.isLoggedIn} />
         <div className="not-found">
           <img src={notFoundImg} className="not-found--image" />
           <h1 className="not-found--title">Oops! Page not found.</h1>
@@ -25,7 +24,6 @@ class NotFoundPage extends Component {
 
           <button className="back-button" onClick={this.goBack}>Back</button>
         </div>
-        <Footer />
       </div>
     );
   }
