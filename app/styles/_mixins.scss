@@ -1,0 +1,7 @@
+@mixin hover-button($bg-color) {
+    background-color: $bg-color;
+
+    &:hover:enabled {
+        background-color: darken($bg-color, 10%);
+    }
+}

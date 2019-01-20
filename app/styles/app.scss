@@ -1,0 +1,77 @@
+$font-size-base: 16px;
+$bootstrap-sass-asset-helper: true;
+$fa-font-path: '../../../node_modules/font-awesome/fonts';
+@import 'variables';
+@import '~bootstrap-sass/assets/stylesheets/_bootstrap';
+@import '~font-awesome/scss/font-awesome';
+@import '~@fortawesome/fontawesome-pro/css/all.min.css';
+@import '~flex-grill/src/flex-grill';
+
+#intercom-container {
+  z-index: 500 !important;
+}
+
+.gsc-input-box {
+  border: none !important;
+
+  &-hover,
+  &-focus {
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.gsc-input {
+  color: $text-color !important;
+  background: transparent !important;
+  padding: 0 !important;
+  height: 100% !important;
+  font-size: 14px !important;
+  text-indent: 0 !important;
+}
+
+.gsc-search-box {
+  margin-bottom: 0 !important;
+}
+
+.gstl_50 {
+  height: 28px !important;
+}
+
+.gsc-control-cse {
+  padding: 12px 15px 10px 35px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-family: inherit !important;
+  height: 100% !important;
+  position: relative;
+
+  &.gsc-control-cse-navbar {
+    padding-top: 6px !important;
+  }
+}
+
+.gsc-search-button {
+  display: none;
+}
+
+.gsib_a {
+  padding: 0 !important;
+}
+
+.cse .gsc-search-button input.gsc-search-button-v2,
+input.gsc-search-button-v2 {
+  box-sizing: content-box;
+}
+
+.gcse-icon {
+  position: absolute;
+  left: 10px;
+  color: black;
+  font-size: 18px;
+  top: 14px;
+
+  &.icon-navbar {
+    top: 9px;
+  }
+}

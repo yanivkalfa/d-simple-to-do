@@ -1,0 +1,44 @@
+@import '~styles/_variables';
+
+.a-not-found {
+  height: 100vh;
+
+  >.not-found {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding: 50px;
+    background-color: rgba(black, 0.8);
+    color: $white;
+
+    >.not-found--image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      max-width: 100%;
+      z-index: -1;
+    }
+
+    >.not-found--title {
+      margin-top: 0;
+      margin-bottom: 25px;
+    }
+
+    >.not-found--message {
+      margin-bottom: 20px;
+    }
+
+    >.back-button {
+      padding: 5px 15px;
+      border: 1px solid $white;
+      border-radius: 4px;
+      background: transparent;
+      transition: background-color 0.5s;
+
+      &:hover {
+        transition: background-color 0.5s;
+        background-color: $abrijit-green;
+      }
+    }
+  }
+}
