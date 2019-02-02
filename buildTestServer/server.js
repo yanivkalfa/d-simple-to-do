@@ -1,8 +1,8 @@
 import path from 'path';
 import express from 'express';
+import { port } from '../configs/buildTestServer.config';
 
 const app = express();
-const port = 8010;
 
 app.use(express.static(path.join(__dirname, '../dist/')));
 app.get('*', (req, res) => {

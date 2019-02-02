@@ -18,6 +18,7 @@ module.exports = {
     extensions: ['.js', '.jsx'],
     alias: {
       'components': path.resolve('./app', 'components'),
+      'containers': path.resolve('./app', 'containers'),
       'utilities': path.resolve('./app', 'utilities'),
       'config': path.resolve('./app', 'config'),
       'types': path.resolve('./app', 'types'),
@@ -25,7 +26,6 @@ module.exports = {
       'services': path.resolve('./app', 'services'),
       'store': path.resolve('./app', 'store'),
       'styles': path.resolve('./app', 'styles'),
-      'pages': path.resolve('./app', 'pages'),
       'reduxContent': path.resolve('./app', 'reduxContent'),
     },
     modules: [

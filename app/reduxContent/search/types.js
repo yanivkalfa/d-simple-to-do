@@ -1,9 +1,0 @@
-export const SET_FILTERS = 'SET_FILTERS';
-export const SET_IS_SEARCHING = 'SET_IS_SEARCHING';
-export const SET_LAST_SEARCH_TERM = 'SET_LAST_SEARCH_TERM';
-export const SET_PAGE = 'SET_PAGE';
-export const SET_PER_PAGE = 'SET_PER_PAGE';
-export const SET_SEARCH_RESULTS = 'SET_SEARCH_RESULTS';
-export const SET_SEARCH_TERM = 'SET_SEARCH_TERM';
-export const SET_TOTAL_PAGES = 'SET_TOTAL_PAGES';
-  

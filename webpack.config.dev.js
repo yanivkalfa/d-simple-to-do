@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const autoprefixer = require('autoprefixer');
+import { port } from './configs/app.config';
 
 module.exports = webpackMerge(commonConfig, {
   mode: 'development',
@@ -10,11 +11,11 @@ module.exports = webpackMerge(commonConfig, {
 
   entry: [
     'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:8001',
+    `webpack-dev-server/client?http://localhost:${port}`,
     'webpack/hot/only-dev-server',
   ],
   devServer: {
-    port:'8001',
+    port,
     hot: true,
     contentBase: path.resolve(__dirname, 'dist'),
     publicPath: '/'
