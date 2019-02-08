@@ -12,12 +12,9 @@ import Root from 'containers/Root/Root';
 import {
   BrowserRouter as Router,
   Route,
-  Switch
 } from 'react-router-dom';
 
 import 'react-toastify/dist/ReactToastify.min.css';
-//  import './styles/app.scss';
-//  import './styles/common.scss';
 
 import configStore from './store/configStore';
 
@@ -30,23 +27,22 @@ render(
         <Route component={Root}/>
       </Router>
     </ThemeProvider>
-  </Provider>
-  ,
+  </Provider>,
   document.getElementById('app')
 );
 
 if (module.hot) {
   module.hot.accept('containers/Root/Root', () => {
-    const NextRoot = require('containers/Root/Root'); // eslint-disable-line global-require
+    const Root = require('containers/Root/Root'); // eslint-disable-line global-require
     render(
       <Provider store={store} >
         <ThemeProvider theme={theme}>
           <Router>
-            <Route component={NextRoot}/>
+            <Route component={Root}/>
           </Router>
         </ThemeProvider>
       </Provider>,
-      document.getElementById('root')
+      document.getElementById('app')
     );
   });
 }

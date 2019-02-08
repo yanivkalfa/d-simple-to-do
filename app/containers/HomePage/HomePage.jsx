@@ -8,6 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styled, { css } from 'styled-components';
 import { ms, msr } from 'styles/helpers';
 import { scaleFont, scale } from 'styles/common';
+import { generateUniqueId } from 'utilities';
 
 import green from '@material-ui/core/colors/green';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -37,6 +38,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
+
+import { getTodosList } from 'reduxContent/todos/selectors';
+import { setList, addListItem, updateListItem, removeListItem } from 'reduxContent/todos/actions';
+
 
 const HomeContainer = styled.div`
   display: flex;
@@ -132,35 +137,93 @@ const styles = theme => ({
   },
 });
 
+type ToDo = {
+  id: string,
+  done: boolean,
+  name: string
+};
 
 type Props = {
-  b: string
+  toDoLis: List<ToDo>,
+  classes: object,
+  history: object,
+  match: object,
+  setToDo: () => {},
+  addToDo: () => {},
+  updateToDo: () => {},
+  removeToDo: () => {}
 };
 
 const defaultState = {
   open: false,
   addNew: false,
-  newValue: ''
+  name: ''
 };
 class HomePage extends Component<Props> {
   props: Props;
   state = defaultState;
 
+  componentDidMount() {
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    const { setToDo } = this.props;
+    setToDo([
+      {
+        id: generateUniqueId(),
+        done: false,
+        name: 'First Task'
+      },
+      {
+        id: generateUniqueId(),
+        done: false,
+        name: 'Second Task'
+      },
+      {
+        id: generateUniqueId(),
+        done: false,
+        name: 'Third Task'
+      }
+    ]);
+  }
+
+  componentWillUnmount() {
+    console.log('bbbbbbbbbbbbbbbbbb');
+  }
+
   addNew(addNew) {
-    this.setState({ addNew,  newValue: '' });
+    this.setState({ addNew,  name: '' });
   }
 
   changeNew(e) {
-    this.setState({ newValue: e.target.value });
+    this.setState({ name: e.target.value });
   }
 
   openMenu(open) {
     this.setState({ open });
   }
 
+  addToDo() {
+    const { addToDo } = this.props;
+    const { name } = this.state;
+    addToDo({ name });
+  }
+
+  todoStatusChange(checked, todo) {
+    const { updateToDo } = this.props;
+    todo.done = checked;
+    updateToDo(todo);
+  }
+
+  removeToDo(id) {
+    const { removeToDo } = this.props;
+    removeToDo(id);
+  }
+
   render() {
-    const { classes } = this.props;
-    const { addNew, open, newValue } = this.state;
+    const { classes, toDoList } = this.props;
+    const { addNew, open, name } = this.state;
+
+    console.log('toDoList', toDoList);
+
     return (
       <HomeContainer>
         <ToDoContainer>
@@ -232,7 +295,7 @@ class HomePage extends Component<Props> {
                               <TextField
                                 id="standard-name"
                                 label="Name"
-                                value={newValue}
+                                value={name}
                                 onChange={(e) => this.changeNew(e)}
                                 margin="normal"
                               />
@@ -249,47 +312,32 @@ class HomePage extends Component<Props> {
                         )
                         : null
                     }
-                    <ListItem>
-                      <Checkbox
-                        checked={false}
-                        onChange={() => {}}
-                        value="checkedG"
-                        classes={{
-                          root: classes.checkbox,
-                          checked: classes.checked,
-                        }}
-                      />
-                      <ListItemText
-                        primary="Single-line item"
-                        secondary='some secondary'
-                      />
-                      <ListItemSecondaryAction>
-                        <IconButton aria-label="Delete">
-                          <DeleteIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                    <ListItem>
-                      <ListItemAvatar>
-                        <Avatar>
-                          <FolderIcon />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText>
-                        <TextField
-                          id="standard-name"
-                          label="Name"
-                          value="adsfadsf"
-                          onChange={()=>{}}
-                          margin="normal"
-                        />
-                      </ListItemText>
-                      <ListItemSecondaryAction>
-                        <IconButton aria-label="Delete">
-                          <DeleteIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
+                    {
+                      toDoList && toDoList.map((toDo, index) => (
+                        <ListItem key={`${toDo.id}_${index}`}>
+                          <Checkbox
+                            checked={toDo.done}
+                            onChange={() => this.todoStatusChange(!toDo.done, toDo)}
+                            value="checkedG"
+                            classes={{
+                              root: classes.checkbox,
+                              checked: classes.checked,
+                            }}
+                          />
+                          <ListItemText
+                            primary={toDo.name}
+                          />
+                          <ListItemSecondaryAction>
+                            <IconButton
+                              onClick={() => this.removeToDo(toDo.id)}
+                              aria-label="Delete"
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      ))
+                    }
                   </List>
                 </Grid>
               </StyledPaper>
@@ -302,31 +350,37 @@ class HomePage extends Component<Props> {
 }
 
 HomePage.propTypes = {
-  classes: PropTypes.object.isRequired,
+  toDoList: PropTypes.array,
+  classes: PropTypes.object,
   history: PropTypes.object,
-  actions: PropTypes.object,
-  match: PropTypes.object
+  match: PropTypes.object,
+  setToDo: PropTypes.func,
+  addToDo: PropTypes.func,
+  updateToDo: PropTypes.func,
+  removeToDo: PropTypes.func
 };
 
-/*
 
 function mapStateToProps(state, ownProps) {
   return {
-    showcases: state.boards.showcase,
-    isLoggedIn: state.auth.isLoggedIn
+    toDoList: getTodosList(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return {actions: bindActionCreators(assign({}, boardsActions, appActions), dispatch)};
+  return bindActionCreators(
+    {
+      setToDo: setList,
+      addToDo: addListItem,
+      updateToDo: updateListItem,
+      removeToDo: removeListItem,
+
+    },
+    dispatch
+  );
 }
-*/
 
 export default compose(
   withStyles(styles),
+  connect(mapStateToProps, mapDispatchToProps)
 )(HomePage);
-
-export {HomePage};
-
-//  export default HomePage; //connect(mapStateToProps, mapDispatchToProps)(HomePage);
-//  export default withStyles(styles)(SearchAppBar);

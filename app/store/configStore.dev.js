@@ -34,5 +34,5 @@ export default function configStore(initialState) {
 }
 
 function devTools() {
-  return typeof window === 'object' && typeof window.devToolsExtension !==  'undefined' ? window.devToolsExtension() : f => f;
+  return typeof window === 'object' && typeof window.__REDUX_DEVTOOLS_EXTENSION__ !==  'undefined' ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f;
 }

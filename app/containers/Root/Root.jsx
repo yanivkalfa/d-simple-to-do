@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import HomePage from '../HomePage/HomePage';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 
-class Root extends React.Component {
+export default class Root extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -26,14 +26,6 @@ class Root extends React.Component {
   }
 }
 
-Root.propTypes = {
-  match: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  isLoggedIn: PropTypes.bool,
-  actions: PropTypes.object
-};
-
 /*
 function mapStateToProps(state) {
   return { isLoggedIn: state.auth.isLoggedIn };
@@ -42,6 +34,4 @@ function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(_.assign({}, authActions, userActions, appActions), dispatch) };
 }
 */
-export default connect(null)(Root);
-
-export {Root};
+//  export default connect(null)(Root);
