@@ -6,6 +6,7 @@ import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import HomePage from '../HomePage/HomePage';
+import TestPage from '../TestPage/TestPage';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 
 export default class Root extends React.Component {
@@ -17,7 +18,7 @@ export default class Root extends React.Component {
     return (
       <div className="app-root">
         <Switch>
-          <Route exact path="/" component={HomePage} />
+          <Route exact path="/" component={TestPage} />
           <Route component={NotFoundPage} />
         </Switch>
         <ToastContainer position="top-center" autoClose={6000} />
@@ -25,13 +26,3 @@ export default class Root extends React.Component {
     );
   }
 }
-
-/*
-function mapStateToProps(state) {
-  return { isLoggedIn: state.auth.isLoggedIn };
-}
-function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(_.assign({}, authActions, userActions, appActions), dispatch) };
-}
-*/
-//  export default connect(null)(Root);

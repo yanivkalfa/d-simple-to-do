@@ -4,9 +4,6 @@ import 'core-js';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { ThemeProvider } from 'styled-components';
-import 'styles/global-styles';
-import theme from './styles/theme';
 import Root from 'containers/Root/Root';
 
 import {
@@ -22,11 +19,9 @@ const store = configStore();
 
 render(
   <Provider store={store} >
-    <ThemeProvider theme={theme}>
-      <Router>
-        <Route component={Root}/>
-      </Router>
-    </ThemeProvider>
+    <Router>
+      <Route component={Root}/>
+    </Router>
   </Provider>,
   document.getElementById('app')
 );
@@ -36,11 +31,9 @@ if (module.hot) {
     const Root = require('containers/Root/Root'); // eslint-disable-line global-require
     render(
       <Provider store={store} >
-        <ThemeProvider theme={theme}>
-          <Router>
-            <Route component={Root}/>
-          </Router>
-        </ThemeProvider>
+        <Router>
+          <Route component={Root}/>
+        </Router>
       </Provider>,
       document.getElementById('app')
     );
