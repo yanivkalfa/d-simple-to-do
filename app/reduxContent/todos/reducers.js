@@ -21,10 +21,7 @@ export default handleActions({
   },
   [ ADD_ITEM ]: (state, action) => {
     const list = state.get('list').toJS();
-    const newItem = action.payload;
-    newItem.id = generateUniqueId(list);
-    newItem.done = false;
-    list.push(newItem);
+    list.push(action.payload);
     return state.set('list', fromJS(list));
   },
   [ UPDATE_ITEM ]: (state, action) => {

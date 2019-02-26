@@ -26,6 +26,16 @@ module.exports = webpackMerge(commonConfig, {
   module: {
     rules: [
       {
+        test: /\.jsx?$/,
+        enforce: "pre",
+        exclude: /node_modules/,
+        loader: "eslint-loader",
+        options: {
+          formatter: require("eslint-formatter-pretty"),
+          failOnError: true
+        }
+      },
+      {
         test: /\.css$/,
         use: [
           'style-loader',

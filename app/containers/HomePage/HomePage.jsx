@@ -8,7 +8,6 @@ import { withStyles } from '@material-ui/core/styles';
 import styled, { css } from 'styled-components';
 import { ms, msr } from 'styles/helpers';
 import { scaleFont, scale } from 'styles/common';
-import { generateUniqueId } from 'utilities';
 
 import green from '@material-ui/core/colors/green';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -39,8 +38,12 @@ import Menu from '@material-ui/core/Menu';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 
+
+import { errorHandler, generateUniqueId } from 'utilities';
+import { ToDosType } from 'types/index';
 import { getTodosList } from 'reduxContent/todos/selectors';
-import { setList, addListItem, updateListItem, removeListItem } from 'reduxContent/todos/actions';
+
+import { getAllTodo, addTodo, updateTodo, removeTodo, confirmTransaction } from 'reduxContent/todos/thunks';
 
 
 const HomeContainer = styled.div`
@@ -149,7 +152,7 @@ type Props = {
   history: object,
   match: object,
   setToDo: () => {},
-  addToDo: () => {},
+  addTodo: () => {},
   updateToDo: () => {},
   removeToDo: () => {}
 };
@@ -164,29 +167,32 @@ class HomePage extends Component<Props> {
   state = defaultState;
 
   componentDidMount() {
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-    const { setToDo } = this.props;
-    setToDo([
-      {
-        id: generateUniqueId(),
-        done: false,
-        name: 'First Task'
-      },
-      {
-        id: generateUniqueId(),
-        done: false,
-        name: 'Second Task'
-      },
-      {
-        id: generateUniqueId(),
-        done: false,
-        name: 'Third Task'
-      }
-    ]);
+    const { getAllTodo } = this.props;
+    getAllTodo().catch((e) => {
+      errorHandler('unable to fetch todos');
+      console.log('error: ', e);
+    });
+
+    this.interval = setInterval(() => {
+      this.confirmAllTransactions();
+    }, 30000);
   }
 
   componentWillUnmount() {
-    console.log('bbbbbbbbbbbbbbbbbb');
+    clearInterval(this.interval);
+  }
+
+  interval = null;
+
+  confirmAllTransactions() {
+    const { toDoList, confirmTransaction } = this.props;
+    toDoList
+      .filter((todo) => !!todo.transaction)
+      .forEach((todo) => {
+        confirmTransaction(todo).catch((e) => {
+          console.log('error: ', e);
+        });
+      });
   }
 
   addNew(addNew) {
@@ -197,32 +203,41 @@ class HomePage extends Component<Props> {
     this.setState({ name: e.target.value });
   }
 
+  onSubmit = (e) => {
+    e.preventDefault();
+    const { addTodo, toDoList } = this.props;
+    const { name } = this.state;
+    addTodo({ id: generateUniqueId(toDoList), name }).catch((e) => {
+      errorHandler('unable to add todos');
+      console.log('error: ', e);
+    })
+    this.addNew(false);
+  };
+
   openMenu(open) {
     this.setState({ open });
   }
 
-  addToDo() {
-    const { addToDo } = this.props;
-    const { name } = this.state;
-    addToDo({ name });
+  todoStatusChange(checked, oldTodo) {
+    const { updateTodo } = this.props;
+    const newTodo = { ...oldTodo, done: checked };
+    updateTodo(oldTodo, newTodo).catch((e) => {
+      errorHandler('unable to update todos');
+      console.log('error: ', e);
+    })
   }
 
-  todoStatusChange(checked, todo) {
-    const { updateToDo } = this.props;
-    todo.done = checked;
-    updateToDo(todo);
-  }
-
-  removeToDo(id) {
-    const { removeToDo } = this.props;
-    removeToDo(id);
+  removeToDo(todo) {
+    const { removeTodo } = this.props;
+    removeTodo(todo).catch((e) => {
+      errorHandler('unable to remove todos');
+      console.log('error: ', e);
+    })
   }
 
   render() {
     const { classes, toDoList } = this.props;
     const { addNew, open, name } = this.state;
-
-    console.log('toDoList', toDoList);
 
     return (
       <HomeContainer>
@@ -292,13 +307,15 @@ class HomePage extends Component<Props> {
                         (
                           <ListItem>
                             <ListItemText>
-                              <TextField
-                                id="standard-name"
-                                label="Name"
-                                value={name}
-                                onChange={(e) => this.changeNew(e)}
-                                margin="normal"
-                              />
+                              <form onSubmit={this.onSubmit}>
+                                <TextField
+                                  id="standard-name"
+                                  label="Name"
+                                  value={name}
+                                  onChange={(e) => this.changeNew(e)}
+                                  margin="normal"
+                                />
+                              </form>
                             </ListItemText>
                             <ListItemSecondaryAction>
                               <IconButton
@@ -313,30 +330,33 @@ class HomePage extends Component<Props> {
                         : null
                     }
                     {
-                      toDoList && toDoList.map((toDo, index) => (
-                        <ListItem key={`${toDo.id}_${index}`}>
-                          <Checkbox
-                            checked={toDo.done}
-                            onChange={() => this.todoStatusChange(!toDo.done, toDo)}
-                            value="checkedG"
-                            classes={{
-                              root: classes.checkbox,
-                              checked: classes.checked,
-                            }}
-                          />
-                          <ListItemText
-                            primary={toDo.name}
-                          />
-                          <ListItemSecondaryAction>
-                            <IconButton
-                              onClick={() => this.removeToDo(toDo.id)}
-                              aria-label="Delete"
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      ))
+                      toDoList &&
+                      toDoList
+                        .filter((todo) => !todo.deleteInProgress)
+                        .map((toDo, index) => (
+                          <ListItem key={`${toDo.id}_${index}`}>
+                            <Checkbox
+                              checked={toDo.done}
+                              onChange={() => this.todoStatusChange(!toDo.done, toDo)}
+                              value="checkedG"
+                              classes={{
+                                root: classes.checkbox,
+                                checked: classes.checked,
+                              }}
+                            />
+                            <ListItemText
+                              primary={toDo.name}
+                            />
+                            <ListItemSecondaryAction>
+                              <IconButton
+                                onClick={() => this.removeToDo(toDo)}
+                                aria-label="Delete"
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                        ))
                     }
                   </List>
                 </Grid>
@@ -350,14 +370,15 @@ class HomePage extends Component<Props> {
 }
 
 HomePage.propTypes = {
-  toDoList: PropTypes.array,
+  toDoList: ToDosType,
   classes: PropTypes.object,
   history: PropTypes.object,
   match: PropTypes.object,
-  setToDo: PropTypes.func,
-  addToDo: PropTypes.func,
-  updateToDo: PropTypes.func,
-  removeToDo: PropTypes.func
+  getAllTodo: PropTypes.func,
+  addTodo: PropTypes.func,
+  updateTodo: PropTypes.func,
+  removeTodo: PropTypes.func,
+  confirmTransaction: PropTypes.func
 };
 
 
@@ -370,10 +391,11 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      setToDo: setList,
-      addToDo: addListItem,
-      updateToDo: updateListItem,
-      removeToDo: removeListItem,
+      getAllTodo,
+      addTodo,
+      updateTodo,
+      removeTodo,
+      confirmTransaction
 
     },
     dispatch
